@@ -20,8 +20,9 @@ jobs:
 
       - name: Generate tag
         run: |
-          git tag "v.${{env.CURRENT_DATETIME}}.1"
-          git push origin "v.${{env.CURRENT_DATETIME}}.1"
+          git remote -v
+          git tag "v.$(date +'%Y%m%d').1"
+          git push origin "v.$(date +'%Y%m%d').1"
 
       - name: Generate Release Tag
         uses: softprops/action-gh-release@v1
