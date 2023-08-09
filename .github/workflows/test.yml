@@ -1,11 +1,9 @@
 name: Create release tag after merge release_branch
 
 on:
-  pull_request:
+  push:
     branches:
-      - release
-    types:
-      - closed
+      - '*'
 
 jobs:
   generate:
@@ -18,11 +16,14 @@ jobs:
           TZ: 'Asia/Tokyo' # タイムゾーン指定
         run: echo "CURRENT_DATETIME=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
 
+        # Gitを使用するための設定
+      - name: Git Settings
+        run: | 
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       # タグの作成・反映
       - name: Generate tag
         run: |
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           git tag "v.$(date +'%Y%m%d').1"
           git push origin "v.$(date +'%Y%m%d').1"
 
