@@ -21,7 +21,7 @@ jobs:
         run: | 
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "GitHub Action"
-          git remote set-url origin "https://:${{ secrets.GITHUB_TOKEN }}@ggithub.com/Yusuke-Nara-0321/github_actions_inspection.git"
+          git remote set-url origin "https://:${{ secrets.GITHUB_TOKEN }}@github.com/Yusuke-Nara-0321/github_actions_inspection.git"
 
       # タグの作成・反映
       - name: Generate tag
