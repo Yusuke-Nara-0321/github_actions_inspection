@@ -20,9 +20,9 @@ jobs:
       - name: Git Settings
         run: | 
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Action"
           git remote set-url origin "https://github.com/Yusuke-Nara-0321/github_actions_inspection.git"
           git remote -v
-          ssh -T git@github.com
 
       # タグの作成・反映
       - name: Generate tag
