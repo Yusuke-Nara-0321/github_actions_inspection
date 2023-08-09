@@ -21,8 +21,7 @@ jobs:
       # タグの作成・反映
       - name: Generate tag
         run: |
-          git config user.name "$(git --no-pager log --format=format:'%an' -n 1)" 
-          git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+          git config user.email "action@github.com"
           git remote set-url origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           git tag "v.$(date +'%Y%m%d').1"
           git push origin "v.$(date +'%Y%m%d').1"
