@@ -27,6 +27,9 @@ jobs:
       - name: Generate tag
         run: |
           git tag -a -m "Test" "v.$(date +'%Y%m%d').1"
+
+      - name: Push Release tag
+        run: |
           git push origin "v.$(date +'%Y%m%d').1"
 
       - name: Generate Release Tag
