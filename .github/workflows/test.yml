@@ -22,12 +22,11 @@ jobs:
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "GitHub Action"
           git remote set-url origin "https://github.com/Yusuke-Nara-0321/github_actions_inspection.git"
-          git remote -v
 
       # タグの作成・反映
       - name: Generate tag
         run: |
-          git tag "v.$(date +'%Y%m%d').1"
+          git tag -a "v.$(date +'%Y%m%d').1"
           git push origin "v.$(date +'%Y%m%d').1"
 
       - name: Generate Release Tag
