@@ -1,7 +1,7 @@
 name: Create release tag after merge release_branch
 
 on:
-  push:
+  pull_request:
     branches:
       - release
     types:
@@ -11,12 +11,17 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v1
 
       - name: Get Current Date
         env:
           TZ: 'Asia/Tokyo' # タイムゾーン指定
         run: echo "CURRENT_DATETIME=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+
+      - name: Generate tag
+        runs: |
+          git tag "v.${{env.CURRENT_DATETIME}}.1"
+          git push origin "v.${{env.CURRENT_DATETIME}}.1"
 
       - name: Generate Release Tag
         uses: softprops/action-gh-release@v1
