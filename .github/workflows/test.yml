@@ -31,7 +31,7 @@ jobs:
 
       - name: Push Release tag
         run: |
-          git push origin "v.$(date +'%Y%m%d').1"
+          git push origin --tags
 
       - name: Generate Release Tag
         uses: softprops/action-gh-release@v1
