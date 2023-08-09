@@ -18,9 +18,11 @@ jobs:
           TZ: 'Asia/Tokyo' # タイムゾーン指定
         run: echo "CURRENT_DATETIME=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
 
+      # タグの作成・反映
       - name: Generate tag
         run: |
-          git remote -v
+          git config --global user.name "GitHub Action"       # push時に使われるgitユーザ名（表示名）
+          git remote set-url origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           git tag "v.$(date +'%Y%m%d').1"
           git push origin "v.$(date +'%Y%m%d').1"
 
