@@ -14,13 +14,16 @@ jobs:
       - name: Get Current Date
         env:
           TZ: 'Asia/Tokyo' # タイムゾーン指定
-        run: echo "CURRENT_DATETIME=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+        run: |
+          echo "CURRENT_DATETIME=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +'%Y%m%d')"
 
         # Gitを使用するための設定
       - name: Git Settings
         run: | 
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.name "GitHub Actions"
+          git remote set-url origin "https://41898282:${{GITHUB_TOKEN}}@github.com/Yusuke-Nara-0321/github_actions_inspection.git"
 
       # タグの作成・反映
       - name: Generate tag
@@ -36,5 +39,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: "${{env.CURRENT_DATETIME}}リリース"
-          tag_name: "v.${{env.CURRENT_DATETIME}}.1"
+          tag_name: "v.${{env.TAG_NAME}}.1"
           generate_release_notes: true
