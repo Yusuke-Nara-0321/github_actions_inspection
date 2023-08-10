@@ -30,10 +30,12 @@ jobs:
           git tag -a -m "Test" "v3.$(date +'%Y%m%d').1"
           git tag
 
+      # タグのコミット
       - name: Push Release tag
         run: |
           git push origin --tags
 
+      # リリースタグの作成
       - name: Generate Release Tag
         uses: softprops/action-gh-release@v1
         with:
