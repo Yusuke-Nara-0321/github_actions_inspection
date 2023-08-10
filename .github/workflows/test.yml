@@ -27,7 +27,7 @@ jobs:
       # タグの作成・反映
       - name: Generate tag
         run: |
-          git tag -a -m "Test" "v.$(date +'%Y%m%d').1"
+          git tag -a -m "Test" "v3.$(date +'%Y%m%d').1"
           git tag
 
       - name: Push Release tag
