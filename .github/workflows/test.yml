@@ -38,5 +38,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: "${{env.CURRENT_DATETIME}}リリース"
-          tag_name: "v.${{env.TAG_NAME}}.1"
+          tag_name: "v3.${{env.TAG_NAME}}.1"
           generate_release_notes: true
