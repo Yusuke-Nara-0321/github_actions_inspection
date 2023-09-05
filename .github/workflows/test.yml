@@ -17,7 +17,7 @@ jobs:
         id: env
         run: |
           echo "CURRENT_DATETIME=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
-          ::set_output tag_name=$(date +'%Y%m%d')
+          echo "::set_output name=tag_name::$(date +'%Y%m%d')"
 
         # Gitを使用するための設定
       - name: Git Settings
