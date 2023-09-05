@@ -58,7 +58,7 @@ jobs:
           
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -d "{ \"tag_name\": \"${{ steps.release_tag.outputs.release_tag }}\", \"name\": \"${{steps.env.tag_name.outputs.tag_name}} リリース\", \"body\": \"${{ steps.release_note.outputs.release_note }}\"}" \
+            -d "{ \"tag_name\": \"${{ steps.release_tag.outputs.release_tag }}\", \"name\": \"${{steps.env.outputs.tag_name}} リリース\", \"body\": \"${{ steps.release_note.outputs.release_note }}\"}" \
             https://api.github.com/repos/${{ github.repository }}/releases
 
 
