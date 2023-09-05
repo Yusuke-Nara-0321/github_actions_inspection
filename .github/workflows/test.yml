@@ -1,34 +1,64 @@
 name: Create release tag after merge release_branch
 
 on:
-  pull_request:
+  push:
     branches:
-      - release
-    types:
-      - closed
+      - '*'
 
 jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       - name: Get Current Date
         env:
           TZ: 'Asia/Tokyo' # タイムゾーン指定
-        run: echo "CURRENT_DATETIME=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+        id: env
+        run: |
+          echo "CURRENT_DATETIME=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+          echo "::set-output name=tag_name::$(date +'%Y.%m.%d')"
+
+        # Gitを使用するための設定
+      - name: Git Settings
+        run: | 
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Actions"
+
+      # 前回のリリースタグを取得
+      - name: Get previous tag
+        id: pre_tag
+        run: |
+          echo "::set-output name=pre_tag::$(curl -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)"
+
 
       # タグの作成・反映
       - name: Generate tag
+        id: release_tag
         run: |
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          git tag "v.$(date +'%Y%m%d').1"
-          git push origin "v.$(date +'%Y%m%d').1"
+          today=$(date +'%Y%m%d')
+          pre_release_version=$(echo ${{ steps.pre_tag.outputs.pre_tag }} | awk -F'.' '{print $1}')
+          pre_release_date=$(echo ${{ steps.pre_tag.outputs.pre_tag }} | awk -F'.' '{print $2}')
+          pre_release_count=$(echo ${{ steps.pre_tag.outputs.pre_tag }} | awk -F'.' '{print $3}')
+          if [[ ! $pre_release_date = $today ]]; then
+            echo "init count"
+            pre_release_count=0
+          fi
+          echo "::set-output name=release_tag::$pre_release_version.$today.$(($pre_release_count + 1))"
 
-      - name: Generate Release Tag
-        uses: softprops/action-gh-release@v1
-        with:
-          name: "${{env.CURRENT_DATETIME}}リリース"
-          tag_name: "v.${{env.CURRENT_DATETIME}}.1"
-          generate_release_notes: true
+      # 前回リリースからの差分をもとに、リリースノートの本文を生成する
+      - name: Generate release note
+        id: release_note
+        run: |
+          echo "::set-output name=release_note::$(curl -X POST -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases/generate-notes -d '{"tag_name":"${{ steps.release_tag.outputs.release_tag }}", "previous_tag_name":"${{ steps.pre_tag.outputs.pre_tag }}"}' | jq .body | sed 's/"//g')"
+
+      # タグを切り、リリースノートを作成する
+      - name: Create Release
+        run: |
+          
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -d "{ \"tag_name\": \"${{ steps.release_tag.outputs.release_tag }}\", \"name\": \"${{steps.env.outputs.tag_name}}リリース\", \"body\": \"${{ steps.release_note.outputs.release_note }}\"}" \
+            https://api.github.com/repos/${{ github.repository }}/releases
+
+

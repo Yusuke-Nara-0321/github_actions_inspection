@@ -1,0 +1,22 @@
+name: Create a pull request for release.
+
+on:
+  pull_request:
+    branches:
+      - release
+    types: [closed]
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # リリース用PRを作成
+      - name: Create release pr
+        run: |
+          gh pr create -B main -t "release->masterへのマージ" -b ""
