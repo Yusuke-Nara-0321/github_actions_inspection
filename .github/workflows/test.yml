@@ -28,21 +28,39 @@ jobs:
       # git tagでリモートの最新タグを１つ取得　比較して一致する場合末尾の数字を１つ加算⇨どうよ？
       # v3のところも前回の値をそのまま使うという作戦　いいと思います。　そうすればｖ４にする時も一回だけ手動でつくればいいの。
 
+      # 前回のリリースタグを取得
+      - name: Get previous tag
+        id: pre_tag
+        run: |
+          echo "::set-output name=pre_tag::$(curl -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)"
+
       # タグの作成・反映
       - name: Generate tag
+        id: release_tag
         run: |
-          git tag -a -m "Test" "v3.$(date +'%Y%m%d').1"
-          git tag
+          today=$(date +'%Y.%m.%d')
+          pre_release_date=$(echo ${{ steps.pre_tag.outputs.pre_tag }} | awk -F'-' '{print $1}')
+          pre_release_count=$(echo ${{ steps.pre_tag.outputs.pre_tag }} | awk -F'-' '{print $2}')
+          if [[ ! $pre_release_date = $today ]]; then
+          echo "init count"
+          pre_release_count=0
+          fi
+          echo "::set-output name=release_tag::$today-$(($pre_release_count + 1))"
 
-      # タグのコミット
-      - name: Push Release tag
+      # 前回リリースからの差分をもとに、リリースノートの本文を生成する
+      - name: Generate release note
+        id: release_note
         run: |
-          git push origin --tags
+          echo "::set-output name=release_note::$(curl -X POST -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases/generate-notes -d '{"tag_name":"${{ steps.release_tag.outputs.release_tag }}", "previous_tag_name":"${{ steps.pre_tag.outputs.pre_tag }}"}' | jq .body | sed 's/"//g')"
 
-      # リリースタグの作成
-      - name: Generate Release Tag
-        uses: softprops/action-gh-release@v1
-        with:
-          name: "${{env.CURRENT_DATETIME}}リリース"
-          tag_name: "v3.${{env.TAG_NAME}}.1"
-          generate_release_notes: true
+      # タグを切り、リリースノートを作成する
+      - name: Create Release
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -d "{ \"tag_name\": \"${{ steps.release_tag.outputs.release_tag }}\", \"name\": \"${{ steps.release_tag.outputs.release_tag }}\", \"body\": \"${{ steps.release_note.outputs.release_note }}\"}" \
+            https://api.github.com/repos/${{ github.repository }}/releases
+
+        # git tag -a -m "Test" "v3.$(date +'%Y%m%d').1"
+        # git tag
+
