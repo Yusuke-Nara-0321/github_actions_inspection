@@ -24,6 +24,10 @@ jobs:
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "GitHub Actions"
 
+      # 同日リリースの場合.1を変更するため、すでにタグがあるか確認する
+      # git tagでリモートの最新タグを１つ取得　比較して一致する場合末尾の数字を１つ加算⇨どうよ？
+      # v3のところも前回の値をそのまま使うという作戦　いいと思います。　そうすればｖ４にする時も一回だけ手動でつくればいいの。
+
       # タグの作成・反映
       - name: Generate tag
         run: |
