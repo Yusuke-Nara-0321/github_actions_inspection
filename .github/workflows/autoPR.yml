@@ -1,0 +1,20 @@
+name: Create a pull request for release.
+
+on:
+  merge:
+    branches: release
+
+jobs:
+  create-release-pr:
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # リリース用PRを作成
+      - name: Create release pr
+        run: |
+          gh pr create -B main -t "release->masterへのマージ" -b ""
