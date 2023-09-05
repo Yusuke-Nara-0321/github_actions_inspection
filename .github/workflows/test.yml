@@ -46,7 +46,7 @@ jobs:
           echo "init count"
           pre_release_count=0
           fi
-          echo "::set-output name=release_tag::pre_release_version.$today.$(($pre_release_count + 1))"
+          echo "::set-output name=release_tag::$pre_release_version.$today.$(($pre_release_count + 1))"
 
       # 前回リリースからの差分をもとに、リリースノートの本文を生成する
       - name: Generate release note
