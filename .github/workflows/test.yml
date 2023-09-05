@@ -16,7 +16,6 @@ jobs:
           TZ: 'Asia/Tokyo' # タイムゾーン指定
         run: |
           echo "CURRENT_DATETIME=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
-          echo "TAG_NAME=$(date +'%Y%m%d')"
 
         # Gitを使用するための設定
       - name: Git Settings
@@ -54,6 +53,7 @@ jobs:
       # タグを切り、リリースノートを作成する
       - name: Create Release
         run: |
+          TAG_NAME=$(date +'%Y%m%d')
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -d "{ \"tag_name\": \"${{ steps.release_tag.outputs.release_tag }}\", \"name\": \"${{TAG_NAME}} リリース\", \"body\": \"${{ steps.release_note.outputs.release_note }}\"}" \
