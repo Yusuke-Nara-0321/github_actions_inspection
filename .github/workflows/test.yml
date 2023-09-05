@@ -14,8 +14,10 @@ jobs:
       - name: Get Current Date
         env:
           TZ: 'Asia/Tokyo' # タイムゾーン指定
+        id: env
         run: |
           echo "CURRENT_DATETIME=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+          ::set_output tag_name=$(date +'%Y%m%d')
 
         # Gitを使用するための設定
       - name: Git Settings
@@ -39,8 +41,8 @@ jobs:
           pre_release_date=$(echo ${{ steps.pre_tag.outputs.pre_tag }} | awk -F'.' '{print $2}')
           pre_release_count=$(echo ${{ steps.pre_tag.outputs.pre_tag }} | awk -F'.' '{print $3}')
           if [[ ! $pre_release_date = $today ]]; then
-          echo "init count"
-          pre_release_count=0
+            echo "init count"
+            pre_release_count=0
           fi
           echo "::set-output name=release_tag::$pre_release_version.$today.$(($pre_release_count + 1))"
 
@@ -53,10 +55,10 @@ jobs:
       # タグを切り、リリースノートを作成する
       - name: Create Release
         run: |
-          TAG_NAME=$(date +'%Y%m%d')
+          
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -d "{ \"tag_name\": \"${{ steps.release_tag.outputs.release_tag }}\", \"name\": \"${{TAG_NAME}} リリース\", \"body\": \"${{ steps.release_note.outputs.release_note }}\"}" \
+            -d "{ \"tag_name\": \"${{ steps.release_tag.outputs.release_tag }}\", \"name\": \"${{steps.env.tag_name.outputs.tag_name}} リリース\", \"body\": \"${{ steps.release_note.outputs.release_note }}\"}" \
             https://api.github.com/repos/${{ github.repository }}/releases
 
 
