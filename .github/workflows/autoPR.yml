@@ -1,10 +1,6 @@
 name: Create a pull request for release.
 
-on:
-  pull_request:
-    branches:
-      - release
-    types: [closed]
+on: push
 
 jobs:
   tag:
