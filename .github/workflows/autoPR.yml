@@ -16,6 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+
+
       # リリース用PRを作成
       - name: Create release pr
         run: |
