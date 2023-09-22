@@ -3,7 +3,7 @@ name: Create a pull request for release.
 on:
   pull_request:
     branches:
-      - 'relase'
+      - release
     types: [closed]
 
 jobs:
