@@ -16,9 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # masterへのPRが作成されている場合消す
+      # release->masterへのPRが作成されている場合消す
       - name: Delete release pr
-        run: gh pr list
+        run: |
+          base_branch=$(gh pr list --state open | awk -F' ' '{print $2}')
+          for(i=0; i < ${#base_branch[*]}; i++);do
+            if [ ${base_branch[i]} = "release"];then
+              gh pr close "release"
+            fi
+          done
 
       # リリース用PRを作成
       - name: Create release pr
