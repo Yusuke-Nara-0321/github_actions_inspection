@@ -16,7 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-
+      # masterへのPRが作成されている場合消す
+      - name: Delete release pr
+        run: |
+          echo "gh pr list"
 
       # リリース用PRを作成
       - name: Create release pr
