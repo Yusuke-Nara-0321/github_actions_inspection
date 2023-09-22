@@ -21,7 +21,7 @@ jobs:
         run: |
           gh pr list --state open
           gh pr list --state open | awk -F' ' '{print $3}'
-          base_branch=${gh pr list --state open | awk -F' ' '{print $2}'}
+          base_branch=(`gh pr list --state open | awk -F' ' '{print $3}'`)
           for(i=0; i < ${#base_branch[*]}; i++);do
             if [ ${base_branch[i]} = "release"];then
               gh pr close "release"
