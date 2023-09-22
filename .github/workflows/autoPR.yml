@@ -19,7 +19,7 @@ jobs:
       # masterへのPRが作成されている場合消す
       - name: Delete release pr
         run: |
-          echo "gh pr list"
+          gh pr list | echo
 
       # リリース用PRを作成
       - name: Create release pr
