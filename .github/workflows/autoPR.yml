@@ -4,12 +4,12 @@ on:
   pull_request:
     branches:
       - release
-    types: [close]
+    types: [closed]
 
 jobs:
   tag:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -19,16 +19,27 @@ jobs:
       # release->masterへのPRが作成されている場合消す
       - name: Delete release pr
         run: |
-          gh pr list --state open
           gh pr list --state open --base "release" | awk -F' ' '{print $2}'
           gh pr list --state open --base "release" | awk -F' ' '{print $1}'
 
           base_branch=`gh pr list --state open --base "release" | awk -F' ' '{print $2}'`
           number=`gh pr list --state open --base "release" | awk -F' ' '{print $1}'`
           
+          echo "releaseから出ているリスト一覧"
+          echo ${base_branch[@]}
+          echo "---要素数---"
+          echo ${#base_branch[@]}
+          echo "---変数値２　たぶん要素番号---"
+          echo ${!base_branch[@]}
+          
+          echo "以下ループ"
+          
           for i in ${!base_branch[@]}; do
+            echo "${base_branch[$i]}"
+            echo "${number[$i]}"
             if [ ${base_branch[$i]} = "release->masterへのマージ" ]; then
-              gh pr close ${number[$i]}
+              echo "closeするぞい"
+              gh pr close "${number[$i]}"
             fi
           done
 
