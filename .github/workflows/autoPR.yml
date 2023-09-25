@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - release
-    types: [closed]
+    types: [close]
 
 jobs:
   tag:
@@ -20,11 +20,15 @@ jobs:
       - name: Delete release pr
         run: |
           gh pr list --state open
-          gh pr list --state open | awk -F' ' '{print $2}'
-          base_branch=`gh pr list --state open | awk -F' ' '{print $2}'`
-          for name in ${base_branch[@]}; do
-            if [ $name = "release->masterへのマージ" ]; then
-              gh pr close "release"
+          gh pr list --state open --base "release" | awk -F' ' '{print $2}'
+          gh pr list --state open --base "release" | awk -F' ' '{print $1}'
+
+          base_branch=`gh pr list --state open --base "release" | awk -F' ' '{print $2}'`
+          number=`gh pr list --state open --base "release" | awk -F' ' '{print $1}'`
+          
+          for i in ${!base_branch[@]}; do
+            if [ ${base_branch[$i]} = "release->masterへのマージ" ]; then
+              gh pr close ${number[$i]}
             fi
           done
 
