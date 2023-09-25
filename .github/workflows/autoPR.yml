@@ -31,7 +31,7 @@ jobs:
             echo ${base_branch[i]}
             if [ ${base_branch[i]} = "release->masterへのマージ" ]; then
               echo "closeするぞい"
-              echo "${number[i]}
+              echo ${number[i]}
               gh pr close "${number[i]}"
             fi
           done
