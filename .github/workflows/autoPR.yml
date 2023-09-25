@@ -26,7 +26,7 @@ jobs:
           echo "${base_branch[@]}"
           
           echo "以下ループ"
-          for i in "${#base_branch[@]}"; do
+          for ( i=0; i<"${#base_branch[@]}"; i++); do
             echo "${base_branch[$i]}"
             echo "${number[$i]}"
             if [ "${base_branch[$i]}" = "release->masterへのマージ" ]; then
