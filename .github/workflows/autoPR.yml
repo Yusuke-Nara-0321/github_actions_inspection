@@ -18,6 +18,7 @@ jobs:
 
       # release->masterへのPRが作成されている場合消す
       - name: Delete release pr
+        shell: bash
         run: |
           base_branch=`gh pr list --state open | awk -F' ' '{print $2}'`
           number=`gh pr list --state open | awk -F' ' '{print $1}'`
@@ -26,7 +27,7 @@ jobs:
           echo "${base_branch[@]}"
           
           echo "以下ループ"
-          for ( i=0; i<"${#base_branch[@]}"; i++); do
+          for( i=0; i<"${#base_branch[@]}"; i++); do
             echo "${base_branch[$i]}"
             echo "${number[$i]}"
             if [ "${base_branch[$i]}" = "release->masterへのマージ" ]; then
