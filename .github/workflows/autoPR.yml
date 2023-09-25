@@ -9,7 +9,7 @@ on:
 jobs:
   tag:
     runs-on: ubuntu-latest
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -24,19 +24,16 @@ jobs:
           
           echo "releaseから出ているリスト一覧"
           echo ${base_branch[@]}
-          echo "---要素数---"
-          echo ${#base_branch[@]}
-          echo "---変数値２　たぶん要素番号---"
-          echo ${!base_branch[@]}
           
           echo "以下ループ"
           
-          for i in ${!base_branch[@]}; do
-            echo ${base_branch[${i}]}
-            echo ${number[${i}]}
-            if [ ${base_branch[${i}]} = "release->masterへのマージ" ]; then
+          for i in ${#base_branch[@]}; do
+            echo ${base_branch[$i]}
+            echo ${number[$i]}
+            if [ ${base_branch[$i]} = "release->masterへのマージ" ]; then
               echo "closeするぞい"
-              gh pr close ${number[${i}]}
+              echo ${number[$i]}
+              gh pr close ${number[$i]}
             fi
           done
 
