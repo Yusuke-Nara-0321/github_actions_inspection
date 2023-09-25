@@ -27,13 +27,13 @@ jobs:
           echo "${base_branch[@]}"
           
           echo "以下ループ"
-          for( i=0; i<"${#base_branch[@]}"; i++); do
-            echo "${base_branch[$i]}"
-            echo "${number[$i]}"
-            if [ "${base_branch[$i]}" = "release->masterへのマージ" ]; then
+          for (( i=0 ; i<${#base_branch[@]}; i++ )) ; do
+            echo "${base_branch[i]}"
+            echo "${number[i]}"
+            if [ "${base_branch[i]}" = "release->masterへのマージ" ]; then
               echo "closeするぞい"
-              echo "${number[$i]}"
-              gh pr close "${number[$i]}"
+              echo "${number[i]}"
+              gh pr close "${number[i]}"
             fi
           done
 
