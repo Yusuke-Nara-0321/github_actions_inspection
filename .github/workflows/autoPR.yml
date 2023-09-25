@@ -1,7 +1,9 @@
 name: Create a pull request for release.
 
 on:
-  push: '*'
+  push:
+    branches:
+      - '*'
 
 jobs:
   tag:
