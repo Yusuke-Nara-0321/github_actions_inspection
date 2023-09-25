@@ -19,11 +19,8 @@ jobs:
       # release->masterへのPRが作成されている場合消す
       - name: Delete release pr
         run: |
-          gh pr list --state open --base "release" | awk -F' ' '{print $2}'
-          gh pr list --state open --base "release" | awk -F' ' '{print $1}'
-
-          base_branch=`gh pr list --state open --base "release" | awk -F' ' '{print $2}'`
-          number=`gh pr list --state open --base "release" | awk -F' ' '{print $1}'`
+          base_branch=`gh pr list --state open | awk -F' ' '{print $2}'`
+          number=`gh pr list --state open | awk -F' ' '{print $1}'`
           
           echo "releaseから出ているリスト一覧"
           echo ${base_branch[@]}
