@@ -24,13 +24,16 @@ jobs:
           base_branch=`gh pr list --state open --base "release" | awk -F' ' '{print $2}'`
           number=`gh pr list --state open --base "release" | awk -F' ' '{print $1}'`
           
-          echo "2のほうの件数"
+          echo "releaseから出ているリスト一覧"
           echo ${base_branch[@]}
+          echo "要素数"
           echo ${#base_branch[@]}
+          echo "変数値２　たぶん要素番号"
           echo ${!base_branch[@]}
           
           for i in ${!base_branch[@]}; do
             if [ ${base_branch[$i]} = "release->masterへのマージ" ]; then
+              echo "closeするぞい"
               gh pr close ${number[$i]}
             fi
           done
