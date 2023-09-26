@@ -27,15 +27,13 @@ jobs:
           echo "${base_branch[@]}"
           
           echo "以下ループ"
-          for (( i=0 ; i<${#base_branch[@]}; i++ )) ; do
-            echo "$i"
-            echo ${number[$i]}
-            echo ${base_branch[$i]}
-          
-            if [ ${base_branch[$i]} = "release->masterへのマージ" ]; then
+          i=0
+          for title in ${base_branch[@]}; do
+            if [ $title = "release->masterへのマージ" ]; then
               echo "closeするぞい"
               gh pr close ${number[$i]}
             fi
+          　let i++
           done
 
       # リリース用PRを作成
