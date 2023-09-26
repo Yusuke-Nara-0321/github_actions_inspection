@@ -29,7 +29,10 @@ jobs:
           echo "以下ループ"
           for idx in ${!base_branch[@]}
           do
-            if [ $base_branch[$idx] = "release->masterへのマージ" ]; then
+            echo $idx
+            echo $base_branch[$idx]
+            if [ $base_branch[$idx] = "release->masterへのマージ" ]
+            then
               echo "closeするぞい"
               gh pr close ${number[$idx]}
             fi
