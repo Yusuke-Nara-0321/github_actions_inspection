@@ -30,12 +30,12 @@ jobs:
           for idx in ${!base_branch[@]}
           do
             echo $idx
-            echo $base_branch[0]
-            echo $base_branch[idx]
-            if [ $base_branch[idx] = "release->masterへのマージ" ]
+            echo ${base_branch[0]}
+            echo ${base_branch[idx]}
+            if [ ${base_branch[idx]} = "release->masterへのマージ" ]
             then
               echo "closeするぞい"
-              gh pr close ${number[$idx]}
+              gh pr close ${number[idx]}
             fi
           done
 
