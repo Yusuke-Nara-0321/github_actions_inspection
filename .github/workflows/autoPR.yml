@@ -28,11 +28,12 @@ jobs:
           existing_pr=$(echo "$pr_list" | jq -r ".[] | select(.title == \"$branch_name\") | .headRefName")
           
           if [ -n "$existing_pr" ]; then
-            gh pr close "release->masterへのマージ"
+            echo "closeします"
+            gh pr close --force "release->masterへのマージ"
           fi
 
       # リリース用PRを作成
       - name: Create release pr
         run: |
-          gh pr create -B main -t "release->masterへのマージ" -b ""
+          gh pr create -B main -H release -t "release->masterへのマージ" -b ""
           
