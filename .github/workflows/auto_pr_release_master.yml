@@ -1,0 +1,33 @@
+name: Create PR for master branch.
+
+on:
+  pull_request:
+    branches:
+      - release
+    types: [closed]
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2 # GitHub Actions v2
+
+      # release->masterへのPRが作成されている場合closeする
+      - name: Close release PR
+        run: |
+          pr_titles=$(gh pr list --state open --json title -q ".[] | .title")
+          for title in ${pr_titles[@]}; do
+            if [ "$title" == "release->masterへのマージ" ]; then
+              gh pr close "release"
+            fi
+          done
+
+      # masterマージ用のPRの生成
+      - name: Create release PR
+        run: |
+          gh pr create -B master -t "release->masterへのマージ" -b ""
