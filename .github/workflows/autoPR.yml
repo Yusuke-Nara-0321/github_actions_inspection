@@ -28,7 +28,7 @@ jobs:
           existing_pr=$(echo "$pr_list" | jq -r ".[] | select(.title == \"$branch_name\") | .headRefName")
           
           echo "${pr_list}"
-          echo "${existing_pr}"
+          echo "フィルタリング結果：${existing_pr}"
           
           if [ -n "$existing_pr" ]; then
             echo "closeします"
