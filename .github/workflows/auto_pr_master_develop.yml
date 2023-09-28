@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2 # GitHub Actions v2
+        uses: actions/checkout@v4
 
       # masterブランチがマージされた場合、既存のdevelopブランチプルリクエストをクローズ
       - name: Close existing develop PR
