@@ -27,7 +27,7 @@ jobs:
           # jqを使ってフィルタリング
           existing_pr=$(echo "$pr_list" | jq -r ".[] | select(.title == \"$branch_name\") | .headRefName")
           
-          echo"${pr_list}"
+          echo "${pr_list}"
           echo "${existing_pr}"
           
           if [ -n "$existing_pr" ]; then
