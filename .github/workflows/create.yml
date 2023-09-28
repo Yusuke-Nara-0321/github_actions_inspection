@@ -1,0 +1,41 @@
+name: "Create PR"
+
+on: [ workflow_dispatch ]
+
+env:
+  JSON_FILE_PATH: sample.json
+  PR_TITLE: release_yyyymmdd->releaseへのマージ
+  PR_LABEL: hoge,foo
+  PR_TEMPLATE: .github/PULL_REQUEST_TEMPLATE.md
+  DEST_BRANCH: main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set current datetime as env variable
+        env:
+          TZ: 'Asia/Tokyo'
+        run: echo "CURRENT_DATETIME=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+      - name: Create new branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git switch -c release$_{{ env.CURRENT_DATETIME }}
+          git push -u origin release_${{ env.CURRENT_DATETIME }}
+
+      - name: Create pull request
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: fix/hoge_${{ env.CURRENT_DATETIME }}
+          destination_branch: ${{ env.DEST_BRANCH }}
+          pr_title: ${{ env.PR_TITLE }}
+          pr_template: ${{ env.PR_TEMPLATE }}
+          pr_label: ${{ env.PR_LABEL }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}

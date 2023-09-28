@@ -1,0 +1,31 @@
+name: Create PR for master and develop branches.
+
+on:
+  pull_request:
+    branches:
+      - master
+    types: [closed]
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2 # GitHub Actions v2
+
+      # masterブランチがマージされた場合、既存のdevelopブランチプルリクエストをクローズ
+      - name: Close existing develop PR
+        run: |
+          existing_pr=$(gh pr list --state open --base develop --json number -q ".[] | .number")
+          if [ -n "$existing_pr" ]; then
+            gh pr close "$existing_pr"
+          fi
+
+      # masterブランチがマージされた場合、developブランチに新しいPRを作成
+      - name: Create develop PR
+        run: |
+          gh pr create -B develop -t "master->developへのマージ" -b ""
