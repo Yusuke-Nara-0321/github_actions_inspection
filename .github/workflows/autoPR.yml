@@ -20,9 +20,9 @@ jobs:
       - name: Delete release pr
         shell: bash
         run: |
+          echo `gh pr list`
           branch_name="release"
           existing_pr=$(gh pr list --state open --base main --author "$(git config user.email)" --json number,head --jq ".[] | select(.head.ref == \"$branch_name\") | .number")
-          
           
           if [ -n "$existing_pr" ]; then
             gh pr close "$existing_pr"
