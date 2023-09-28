@@ -21,8 +21,9 @@ jobs:
         shell: bash
         run: |
           echo `gh pr list`
+          echo `git config user.email`
           branch_name="release"
-          existing_pr=$(gh pr list --state open --json number,branch --jq ".[] | select(.branch == \"$branch_name\") | .number")
+          existing_pr=$(gh pr list --state open --base release --author "$(git config user.email)"　--json number,headRefName --jq ".[] | select(.headRefName == \"$branch_name\") | .number")
           
           if [ -n "$existing_pr" ]; then
             gh pr close "$existing_pr"
