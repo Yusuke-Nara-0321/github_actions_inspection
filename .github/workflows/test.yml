@@ -10,7 +10,7 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get Current Date
         env:
@@ -29,14 +29,16 @@ jobs:
       - name: Create Tag Name
         run: |
           today=$(date +'%Y%m%d')
-          echo "RELEASE_TAG=$v3.$today.1)" >> $GITHUB_ENV
+          echo "RELEASE_TAG=$v3.$today.1" >> $GITHUB_ENV
+          RELEASE_NOTE="リリースノート本文"
+          echo "RELEASE_NOTE=$RELEASE_NOTE" >> $GITHUB_ENV
 
       # タグを切り、リリースノートを作成する
-      - name: Create Release
+      - name: Create Release Tag
         run: |
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -d "{ \"tag_name\": \"${RELEASE_TAG}\", \"name\": \"${TAG_NAME}リリース\", \"body\": \"\"}" \
+            -d "{ \"tag_name\": \"${RELEASE_TAG}\", \"name\": \"${TAG_NAME}リリース\", \"body\": \"${RELEASE_NOTE}\"}" \
             https://api.github.com/repos/${{ github.repository }}/releases
 
 
