@@ -23,7 +23,11 @@ jobs:
           echo `gh pr list`
           echo `git config user.email`
           branch_name="release"
-          existing_pr=$(gh pr list --state open --base release --author "$(git config user.email)"　--json "number,headRefName" --jq ".[] | select(.headRefName == \"$branch_name\") | .number")
+          # プルリクエスト一覧を取得し、JSON形式で保存
+          pr_list=$(gh pr list --state open --base release --author "$(git config user.email)" --json number,headRefName)
+
+          # jqを使ってフィルタリング
+          existing_pr=$(echo "$pr_list" | jq -r ".[] | select(.headRefName == \"$branch_name\") | .number")
           
           if [ -n "$existing_pr" ]; then
             gh pr close "$existing_pr"
