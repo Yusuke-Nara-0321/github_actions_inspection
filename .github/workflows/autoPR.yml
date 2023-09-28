@@ -20,17 +20,15 @@ jobs:
       - name: Delete release pr
         shell: bash
         run: |
-          echo `gh pr list`
-          echo `git config user.email`
-          branch_name="release"
+          branch_name="release->masterへのマージ"
           # プルリクエスト一覧を取得し、JSON形式で保存
-          pr_list=$(gh pr list --state open --base release --author "$(git config user.email)" --json number,headRefName)
+          pr_list=$(gh pr list --state open --base main --json number,headRefName)
 
           # jqを使ってフィルタリング
-          existing_pr=$(echo "$pr_list" | jq -r ".[] | select(.headRefName == \"$branch_name\") | .number")
+          existing_pr=$(echo "$pr_list" | jq -r ".[] | select(.title == \"$branch_name\") | .headRefName")
           
           if [ -n "$existing_pr" ]; then
-            gh pr close "$existing_pr"
+            gh pr close "release->masterへのマージ"
           fi
 
       # リリース用PRを作成
