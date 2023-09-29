@@ -30,7 +30,7 @@ jobs:
         run: |
           today=$(date +'%Y%m%d')
           echo "RELEASE_TAG=v3.${today}.1" >> $GITHUB_ENV
-          RELEASE_NOTE="リリースノート本文"
+          RELEASE_NOTE=""
           echo "RELEASE_NOTE=$RELEASE_NOTE" >> $GITHUB_ENV
 
       # タグを切り、リリースノートを作成する
